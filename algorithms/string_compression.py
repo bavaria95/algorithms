@@ -2,6 +2,8 @@
     Compress string by replacing repeating characters with number of reperitions.
     Return the original string if the length of compressed string in this way is longer
 '''
+import re
+
 
 def compress(s):
     counter = []
@@ -15,6 +17,19 @@ def compress(s):
             counter[-1]['count'] += 1
     
     compressed_string = ''.join([x['letter']+str(x['count']) for x in counter])
+    if len(compressed_string) < len(s):
+        return compressed_string
+    return s
+
+
+def compress_re(s):
+    '''
+        Using regexp to match repeating letters
+    '''
+
+    rep_re = re.compile(r'((?P<letter>[a-z])((?P=letter)*))')
+    re.findall(rep_re, s)
+    compressed_string = ''.join(['{}{}'.format(letter[0][0], len(letter[0])) for letter in re.findall(rep_re, s)])
     if len(compressed_string) < len(s):
         return compressed_string
     return s
