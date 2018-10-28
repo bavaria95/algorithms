@@ -44,9 +44,68 @@ class List:
         if not self.current:
             raise StopIteration
 
-        prev = self.current
+        prev_node = self.current
         self.current = self.current.next
-        return prev
+        return prev_node
+
+    def __getitem__(self, key):
+        '''
+        Getting element in the list by key-th index
+        '''
+        if not isinstance(key, int):
+            raise TypeError("Key should be integer")
+
+        if key < 0:
+            raise KeyError("Key can't be negative")
+
+        if not self.head:
+            raise KeyError("List doesn't have node by key %s" % key)
+
+        k = self.head
+        for i in range(key):
+            if not k.next:
+                raise KeyError("List doesn't have node by key %s" % key)
+            k = k.next
+
+        return k
+
+    def __setitem__(self, key, value):
+        if not isinstance(value, Node):
+            raise TypeError("Value should be an instance of Node class")
+
+        node_to_replace = self.__getitem__(key)
+
+        prev_node = None
+        curr_node = self.head
+        while curr_node and curr_node != node_to_replace:
+            prev_node = curr_node
+            curr_node = curr_node.next
+
+        if not prev_node:
+            # setting value to the head
+            value.next = self.head.next
+            self.head = value
+            return
+
+        prev_node.next = value
+        value.next = curr_node.next
+
+    def __delitem__(self, key):
+        node_to_remove = self.__getitem__(key)
+        if not node_to_remove:
+            return False
+
+        prev_node = None
+        curr_node = self.head
+        while curr_node and curr_node != node_to_remove:
+            prev_node = curr_node
+            curr_node = curr_node.next
+
+        if not prev_node:
+            self.head = curr_node.next
+            return
+
+        prev_node.next = curr_node.next
 
     def add_first(self, node):
         if not self.head:
@@ -118,10 +177,16 @@ class List:
 if __name__ == '__main__':
     l = List()
 
-    for i in range(0):
+    for i in range(10):
         node = Node(i)
         l.add_last(node)
     print(l)
 
-    for n in l:
-        print(n)
+    print(l[5])
+
+    l[5] = Node(42)
+    print(l)
+
+    del l[5]
+    print(l)
+
