@@ -28,9 +28,17 @@ class List:
         return s
 
     def add_first(self, node):
-        node.next = self.head
-        self.head = node
+        if not self.head:
+            self.head = node
+            return self.head
 
+        # supporting providing a chain of nodes
+        k = node
+        while k.next:
+            k = k.next
+        k.next = self.head
+
+        self.head = node
         return self.head
 
     def add_after(self, node, new_node):
@@ -54,9 +62,9 @@ class List:
 if __name__ == '__main__':
     l = List()
 
-
     for i in range(10):
         node = Node(i)
-        l.add_last(node)
+        node.next = node_two
+        l.add_first(node)
 
     print(l)
