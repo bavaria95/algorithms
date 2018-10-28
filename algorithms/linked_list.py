@@ -27,6 +27,27 @@ class List:
         s += ']'
         return s
 
+    def __len__(self):
+        num_nodes = 0
+        k = self.head
+        while k:
+            num_nodes += 1
+            k = k.next
+
+        return num_nodes
+
+    def __iter__(self):
+        self.current = self.head
+        return self
+
+    def __next__(self):
+        if not self.current:
+            raise StopIteration
+
+        prev = self.current
+        self.current = self.current.next
+        return prev
+
     def add_first(self, node):
         if not self.head:
             self.head = node
@@ -70,7 +91,6 @@ class List:
         prev_node.next = curr_node.next
         return curr_node.next
 
-
     def add_last(self, node):
         if not self.head:
             self.head = node
@@ -98,15 +118,10 @@ class List:
 if __name__ == '__main__':
     l = List()
 
-    for i in range(10):
+    for i in range(0):
         node = Node(i)
-        l.add_first(node)
+        l.add_last(node)
     print(l)
 
-    l.remove_last()
-    print(l)
-
-    for i in range(9):
-        l.remove_first()
-    print(l)
-
+    for n in l:
+        print(n)
