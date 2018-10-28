@@ -41,11 +41,35 @@ class List:
         self.head = node
         return self.head
 
+    def remove_first(self):
+        if self.head:
+            self.head = self.head.next
+
+        return self.head
+
     def add_after(self, node, new_node):
         new_node.next = node.next
         node.next = new_node
 
         return new_node
+
+    def remove_node(self, node):
+        if self.head == node:
+            self.head = node.next
+            return self.head
+
+        prev_node = None
+        curr_node = self.head
+        while curr_node and curr_node != node:
+            prev_node = curr_node
+            curr_node = curr_node.next
+
+        if not curr_node:
+            raise IndexError("Node %s isn't in the list" % node)
+
+        prev_node.next = curr_node.next
+        return curr_node.next
+
 
     def add_last(self, node):
         if not self.head:
@@ -58,13 +82,31 @@ class List:
         self.add_after(k, node)
         return node
 
+    def remove_last(self):
+        prev_node = None
+        curr_node = self.head
+
+        while curr_node:
+            prev_node = curr_node
+            curr_node = curr_node.next
+
+        if not prev_node:
+            return
+        return self.remove_node(prev_node)
+
 
 if __name__ == '__main__':
     l = List()
 
     for i in range(10):
         node = Node(i)
-        node.next = node_two
         l.add_first(node)
-
     print(l)
+
+    l.remove_last()
+    print(l)
+
+    for i in range(9):
+        l.remove_first()
+    print(l)
+
