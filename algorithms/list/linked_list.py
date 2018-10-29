@@ -175,18 +175,49 @@ class List:
 
 
 if __name__ == '__main__':
-    l = List()
+    import json
 
+    l = List()
+    for i in range(10):
+        node = Node(i)
+        l.add_first(node)
+    assert json.loads(str(l)) == list(range(10))[::-1]
+
+
+    l = List()
     for i in range(10):
         node = Node(i)
         l.add_last(node)
-    print(l)
+    assert json.loads(str(l)) == list(range(10))
+    assert len(l) == 10
 
-    print(l[5])
+    for i, node in enumerate(l):
+        assert node.value == i
 
-    l[5] = Node(42)
-    print(l)
+    l.remove_last()
+    assert json.loads(str(l)) == list(range(9))
 
-    del l[5]
-    print(l)
+    l.remove_first()
+    assert json.loads(str(l)) == list(range(1, 9))
 
+
+    l = List()
+    for i in range(10):
+        node = Node(i)
+        l.add_last(node)
+
+    node = l[5]
+    assert node.value == 5
+
+    new_node = Node(42)
+    l[5] = new_node
+    node = l[5]
+    assert node.value == 42
+
+    new_node = Node(5.5)
+    l.add_after(node, new_node)
+    node = l[6]
+    assert node.value == 5.5
+
+    del l[6]
+    assert len(l) == 10
