@@ -38,3 +38,36 @@ class Graph:
         if bidirectional:
             self.vertices[v.name].add_neighbour(u)
 
+
+if __name__ == '__main__':
+    graph = Graph()
+
+    a = Vertex('A')
+    b = Vertex('B')
+    c = Vertex('C')
+    d = Vertex('D')
+    e = Vertex('E')
+    f = Vertex('F')
+    g = Vertex('G')
+    h = Vertex('H')
+
+    graph.add_vertex(a)
+    graph.add_vertex(b)
+    graph.add_vertex(c)
+    graph.add_vertex(d)
+    graph.add_vertex(e)
+    graph.add_vertex(f)
+    graph.add_vertex(g)
+    graph.add_vertex(h)
+
+    graph.add_edge(a, b)
+    graph.add_edge(b, c)
+    graph.add_edge(b, c)
+    graph.add_edge(c, d)
+    graph.add_edge(c, e)
+    graph.add_edge(e, g)
+    graph.add_edge(e, f)
+    graph.add_edge(f, g)
+    graph.add_edge(b, c)
+    graph.add_edge(f, a)
+    graph.add_edge(h, a)
