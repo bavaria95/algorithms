@@ -23,7 +23,7 @@ class Graph:
 
         self.vertices[v.name] = v
 
-    def add_edge(self, u, v):
+    def add_edge(self, u, v, bidirectional=True):
         if not isinstance(u, Vertex):
             raise Exception('You can only have edge between vertices')
 
@@ -34,5 +34,7 @@ class Graph:
             raise Exception('Vertex doesn\' exist')
 
         self.vertices[u.name].add_neighbour(v)
-        self.vertices[v.name].add_neighbour(u)
+
+        if bidirectional:
+            self.vertices[v.name].add_neighbour(u)
 
