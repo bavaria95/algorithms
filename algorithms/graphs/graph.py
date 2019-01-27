@@ -98,6 +98,29 @@ class Graph:
 
         return order
 
+    def bfs(self, u):
+        # marking vertices as not yet visited
+        for name, v in self.vertices.iteritems():
+            v.visited = False
+
+        order = []
+        visited = set()
+        queue = []
+
+        queue.append(u)
+
+        while queue:
+            v = queue.pop(0)
+
+            order.append(v)
+            visited.add(v)
+
+            for w in sorted(v.neighbours):
+                    if w not in visited and w not in queue:
+                        queue.append(w)
+
+        return order
+
 
 if __name__ == '__main__':
     graph = Graph()
@@ -142,3 +165,5 @@ if __name__ == '__main__':
 
 
     print(graph.dfs_iter(a))
+
+    print(graph.bfs(a))
