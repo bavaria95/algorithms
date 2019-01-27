@@ -2,6 +2,7 @@ class Vertex:
     def __init__(self, name):
         self.name = name
         self.neighbours = set()
+        self.visited = False
 
     def add_neighbour(self, v):
         if not isinstance(v, Vertex):
@@ -19,13 +20,14 @@ class Vertex:
     def __repr__(self):
         return self.name
 
-    def __eq__(self, other):
+    def __le__(self, other):
         if self is other:
             return True
         if type(self) != type(other):
             return False
 
-        return self.name == other.name
+        return self.name <= other.name
+
 
     def __hash__(self):
         return hash(self.name)
@@ -65,6 +67,14 @@ class Graph:
     def degree(self, v):
         return v.degree
 
+    def dfs(self, u, order):
+        # adding our node to the ordered history of visited nodes
+        order.append(u)
+
+        u.visited = True
+        for v in sorted(u.neighbours):
+            if not v.visited:
+                self.dfs(v, order)
 
 if __name__ == '__main__':
     graph = Graph()
@@ -98,3 +108,7 @@ if __name__ == '__main__':
     graph.add_edge(b, c)
     graph.add_edge(f, a)
     graph.add_edge(h, a)
+
+    order = []
+    graph.dfs(a, order)
+    print(order)
