@@ -9,6 +9,27 @@ class Vertex:
 
         self.neighbours.add(v)
 
+    def is_adjacent(self, v):
+        return v in self.neighbours
+
+    @property
+    def degree(self):
+        return len(self.neighbours)
+
+    def __repr__(self):
+        return self.name
+
+    def __eq__(self, other):
+        if self is other:
+            return True
+        if type(self) != type(other):
+            return False
+
+        return self.name == other.name
+
+    def __hash__(self):
+        return hash(self.name)
+
 
 class Graph:
     def __init__(self):
@@ -37,6 +58,12 @@ class Graph:
 
         if bidirectional:
             self.vertices[v.name].add_neighbour(u)
+
+    def is_adjacent(self, u, v):
+        return u.is_adjacent(v)
+
+    def degree(self, v):
+        return v.degree
 
 
 if __name__ == '__main__':
