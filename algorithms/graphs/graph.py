@@ -76,6 +76,29 @@ class Graph:
             if not v.visited:
                 self.dfs(v, order)
 
+    def dfs_iter(self, u):
+        # marking vertices as not yet visited
+        for name, v in self.vertices.iteritems():
+            v.visited = False
+
+        order = []
+
+        stack = []
+        stack.append(u)
+
+        while stack:
+            v = stack.pop()
+
+            if not v.visited:
+                order.append(v)
+                v.visited = True
+                for w in sorted(v.neighbours, reverse=True):
+                    if not w.visited:
+                        stack.append(w)
+
+        return order
+
+
 if __name__ == '__main__':
     graph = Graph()
 
@@ -109,6 +132,13 @@ if __name__ == '__main__':
     graph.add_edge(f, a)
     graph.add_edge(h, a)
 
+
+    # marking vertices as not yet visited
+    for name, v in graph.vertices.iteritems():
+        v.visited = False
     order = []
     graph.dfs(a, order)
     print(order)
+
+
+    print(graph.dfs_iter(a))
