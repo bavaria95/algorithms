@@ -11,6 +11,8 @@ class Stack:
         k = self.top
 
         while k:
+            if k is k.next:
+                raise Exception('You have self referencing node')
             num_nodes += 1
             k = k.next
 
