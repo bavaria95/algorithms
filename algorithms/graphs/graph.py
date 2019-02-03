@@ -1,4 +1,4 @@
-class Vertex:
+class Vertex(object):
     def __init__(self, name):
         self.name = name
         self.neighbours = set()
@@ -33,7 +33,7 @@ class Vertex:
         return hash(self.name)
 
 
-class Graph:
+class Graph(object):
     def __init__(self):
         self.vertices = {}
 

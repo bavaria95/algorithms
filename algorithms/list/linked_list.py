@@ -2,7 +2,7 @@
     Simple implementation of Single-Linked List
 '''
 
-class Node:
+class Node(object):
     def __init__(self, value):
         self.value = value
         self.next = None
@@ -11,7 +11,7 @@ class Node:
         return str(self.value)
 
 
-class List:
+class List(object):
     def __init__(self):
         self.head = None
 
