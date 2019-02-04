@@ -78,17 +78,21 @@ class Hash(object):
     def __len__(self):
         return sum([len(llist) for llist in self.buckets])
 
+    def __contains__(self, key):
+        return self.__get(key)
+
 if __name__ == '__main__':
     d = Hash(10)
 
     assert len(d) == 0
+    assert 'key1' not in d
 
     d['key1'] = 'value1'
     d['key2'] = 'value2'
     d['key3'] = 'value3'
 
     assert len(d) == 3
-
+    assert 'key1' in d
     assert d['key3'] == 'value3'
     assert d['key1'] == 'value1'
 
@@ -99,6 +103,7 @@ if __name__ == '__main__':
         raise AssertionError('KeyError was supposed to be raised')
     except KeyError:
         pass
+    assert 'key42' not in d
 
     del d['key1']
     try:
@@ -108,7 +113,6 @@ if __name__ == '__main__':
         pass
 
     assert len(d) == 2
-
 
     d['key3'] = 'new_value3'
     assert d['key3'] == 'new_value3'
