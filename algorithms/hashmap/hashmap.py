@@ -38,7 +38,11 @@ class Hash(object):
 
     def __setitem__(self, key, value):
         index = self.__get_bucket_index(key)
+        node = self.__get(key)
         llist = self.buckets[index]
+
+        if node:
+            llist.remove_node(node)
 
         new_node = HashNode(key, value)
 
@@ -97,3 +101,5 @@ if __name__ == '__main__':
     except KeyError:
         pass
 
+    d['key3'] = 'new_value3'
+    assert d['key3'] == 'new_value3'
