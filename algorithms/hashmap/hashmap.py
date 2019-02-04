@@ -51,8 +51,17 @@ class Hash(object):
 
         if node:
             return node.value
-
         return None
+
+    def delete(self, key):
+        index = self.__get_bucket_index(key)
+
+        llist = self.buckets[index]
+
+        node = self.__find_node_by_key(llist, key)
+
+        if node:
+            llist.remove_node(node)
 
 
 if __name__ == '__main__':
@@ -65,4 +74,10 @@ if __name__ == '__main__':
     assert d.get('key3') == 'value3'
     assert d.get('key1') == 'value1'
 
+    assert d.get('key42') is None
+
+    d.delete('key1')
+    assert d.get('key1') is None
+
+    d.delete('key42')
     assert d.get('key42') is None
