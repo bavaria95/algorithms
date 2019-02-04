@@ -62,6 +62,19 @@ class Hash(object):
 
         self.__missing__(key)
 
+    def get(self, key, *default):
+        if len(default) > 1:
+            raise TypeError('get() expected 2 arguments, got {} instead'.format(len(default) + 1))
+
+        node = self.__get(key)
+        if node:
+            return node.value
+
+        if len(default):
+            return default[0]
+
+        self.__missing__(key)
+
     def __delitem__(self, key):
         index = self.__get_bucket_index(key)
         llist = self.buckets[index]
@@ -118,3 +131,11 @@ if __name__ == '__main__':
     assert d['key3'] == 'new_value3'
 
     assert len(d) == 2
+
+    assert d.get('key3', '') == 'new_value3'
+    assert d.get('key42', '') == ''
+    try:
+        d.get('key42')
+        raise AssertionError('KeyError was supposed to be raised')
+    except KeyError:
+        pass
