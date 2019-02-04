@@ -36,48 +36,64 @@ class Hash(object):
 
         return None
 
-    def set(self, key, value):
+    def __setitem__(self, key, value):
         index = self.__get_bucket_index(key)
-        node = HashNode(key, value)
-
-        self.buckets[index].add_last(node)
-
-    def get(self, key):
-        index = self.__get_bucket_index(key)
-
         llist = self.buckets[index]
 
+        new_node = HashNode(key, value)
+
+        llist.add_last(new_node)
+
+    def __get(self, key):
+        index = self.__get_bucket_index(key)
+        llist = self.buckets[index]
         node = self.__find_node_by_key(llist, key)
 
+        return node
+
+    def __getitem__(self, key):
+        node = self.__get(key)
         if node:
             return node.value
-        return None
 
-    def delete(self, key):
+        self.__missing__(key)
+
+    def __delitem__(self, key):
         index = self.__get_bucket_index(key)
-
         llist = self.buckets[index]
-
         node = self.__find_node_by_key(llist, key)
 
-        if node:
-            llist.remove_node(node)
+        if not node:
+            raise KeyError('Key {} is missing in dictionary'.format(key))
+
+        llist.remove_node(node)
+
+    def __missing__(self, key):
+        raise KeyError('Key {} is missing in dictionary'.format(key))
 
 
 if __name__ == '__main__':
     d = Hash(10)
 
-    d.set('key1', 'value1')
-    d.set('key2', 'value2')
-    d.set('key3', 'value3')
+    d['key1'] = 'value1'
+    d['key2'] = 'value2'
+    d['key3'] = 'value3'
 
-    assert d.get('key3') == 'value3'
-    assert d.get('key1') == 'value1'
+    assert d['key3'] == 'value3'
+    assert d['key1'] == 'value1'
 
-    assert d.get('key42') is None
+    # TODO
+    # use proper testing tool
+    try:
+        d['key42']
+        raise AssertionError('KeyError was supposed to be raised')
+    except KeyError:
+        pass
 
-    d.delete('key1')
-    assert d.get('key1') is None
+    del d['key1']
+    try:
+        d['key1']
+        raise AssertionError('KeyError was supposed to be raised')
+    except KeyError:
+        pass
 
-    d.delete('key42')
-    assert d.get('key42') is None
