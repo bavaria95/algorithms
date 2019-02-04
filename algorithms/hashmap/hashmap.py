@@ -75,13 +75,19 @@ class Hash(object):
     def __missing__(self, key):
         raise KeyError('Key {} is missing in dictionary'.format(key))
 
+    def __len__(self):
+        return sum([len(llist) for llist in self.buckets])
 
 if __name__ == '__main__':
     d = Hash(10)
 
+    assert len(d) == 0
+
     d['key1'] = 'value1'
     d['key2'] = 'value2'
     d['key3'] = 'value3'
+
+    assert len(d) == 3
 
     assert d['key3'] == 'value3'
     assert d['key1'] == 'value1'
@@ -101,5 +107,10 @@ if __name__ == '__main__':
     except KeyError:
         pass
 
+    assert len(d) == 2
+
+
     d['key3'] = 'new_value3'
     assert d['key3'] == 'new_value3'
+
+    assert len(d) == 2
