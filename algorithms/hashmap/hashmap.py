@@ -94,6 +94,34 @@ class Hash(object):
     def __contains__(self, key):
         return self.__get(key)
 
+    def __iter__(self):
+        self.iter_bucket_index = 0
+        self.iter_prev = None
+
+        return self
+
+    def __next__(self):
+        if self.iter_prev and self.iter_prev.next:
+            self.iter_prev = self.iter_prev.next
+            return self.iter_prev.key
+
+        if not self.iter_prev and self.buckets[self.iter_bucket_index].head:
+            self.iter_prev = self.buckets[self.iter_bucket_index].head
+            return self.buckets[self.iter_bucket_index].head.key
+
+        self.iter_bucket_index += 1
+        while self.iter_bucket_index < self.buckets_size and not self.buckets[self.iter_bucket_index].head:
+            self.iter_bucket_index += 1
+        if self.iter_bucket_index >= self.buckets_size:
+            raise StopIteration
+
+        if self.buckets[self.iter_bucket_index].head:
+            self.iter_prev = self.buckets[self.iter_bucket_index].head
+            return self.buckets[self.iter_bucket_index].head.key
+
+        raise StopIteration
+
+
 if __name__ == '__main__':
     d = Hash(10)
 
@@ -139,3 +167,8 @@ if __name__ == '__main__':
         raise AssertionError('KeyError was supposed to be raised')
     except KeyError:
         pass
+
+    d['key4'] = 'value4'
+    d['key5'] = 'value5'
+
+    assert set([k for k in d]) == set(['key2', 'key3', 'key4', 'key5'])
