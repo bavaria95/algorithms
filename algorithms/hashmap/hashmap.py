@@ -16,6 +16,7 @@ class Hash(object):
     def __init__(self, buckets_size=1024):
         self.buckets_size = buckets_size
         self.buckets = [List() for _ in range(buckets_size)]
+        self.num_keys = 0
 
     @staticmethod
     def __check_if_key_hashable(key):
@@ -43,10 +44,12 @@ class Hash(object):
 
         if node:
             llist.remove_node(node)
+            self.num_keys -= 1
 
         new_node = HashNode(key, value)
-
         llist.add_last(new_node)
+        self.num_keys += 1
+
 
     def __get(self, key):
         index = self.__get_bucket_index(key)
@@ -84,12 +87,13 @@ class Hash(object):
             raise KeyError('Key {} is missing in dictionary'.format(key))
 
         llist.remove_node(node)
+        self.num_keys -= 1
 
     def __missing__(self, key):
         raise KeyError('Key {} is missing in dictionary'.format(key))
 
     def __len__(self):
-        return sum([len(llist) for llist in self.buckets])
+        return self.num_keys
 
     def __contains__(self, key):
         return self.__get(key)
