@@ -13,7 +13,11 @@ class HashNode(Node):
 
 
 class Hash(object):
-    def __init__(self, buckets_size=1024):
+    def __init__(self, buckets_size=None):
+        self.fixed_size = bool(buckets_size)
+        if not buckets_size:
+            buckets_size = 1024 # default
+
         self.buckets_size = buckets_size
         self.buckets = Hash.__allocate_buckets(buckets_size)
         self.num_keys = 0
@@ -27,6 +31,9 @@ class Hash(object):
         return float(self.num_keys) / self.buckets_size
 
     def resize_up(self):
+        if self.fixed_size:
+            return
+
         # create a new hash with double buckets size
         new_hash = Hash(self.buckets_size * 2)
 
@@ -38,6 +45,9 @@ class Hash(object):
         self.__dict__.update(new_hash.__dict__)
 
     def resize_down(self):
+        if self.fixed_size:
+            return
+
         new_hash = Hash(int(self.buckets_size * 0.5))
 
         for key, value in self.items():
