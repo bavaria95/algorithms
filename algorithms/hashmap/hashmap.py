@@ -15,8 +15,36 @@ class HashNode(Node):
 class Hash(object):
     def __init__(self, buckets_size=1024):
         self.buckets_size = buckets_size
-        self.buckets = [List() for _ in range(buckets_size)]
+        self.buckets = Hash.__allocate_buckets(buckets_size)
         self.num_keys = 0
+
+    @staticmethod
+    def __allocate_buckets(buckets_size):
+        return [List() for _ in range(buckets_size)]
+
+    @property
+    def load_factor(self):
+        return float(self.num_keys) / self.buckets_size
+
+    def resize_up(self):
+        # create a new hash with double buckets size
+        new_hash = Hash(self.buckets_size * 2)
+
+        # copy elements to the new hash
+        for key, value in self.items():
+            new_hash[key] = value
+
+        # trick to replace current object with a new one
+        self.__dict__.update(new_hash.__dict__)
+
+    def resize_down(self):
+        new_hash = Hash(int(self.buckets_size * 0.5))
+
+        for key, value in self.items():
+            new_hash[key] = value
+
+        # trick to replace current object with a new one
+        self.__dict__.update(new_hash.__dict__)
 
     @staticmethod
     def __check_if_key_hashable(key):
@@ -38,6 +66,9 @@ class Hash(object):
         return None
 
     def __setitem__(self, key, value):
+        if self.load_factor > 0.75:
+            self.resize_up()
+
         index = self.__get_bucket_index(key)
         node = self.__get(key)
         llist = self.buckets[index]
@@ -79,6 +110,9 @@ class Hash(object):
         self.__missing__(key)
 
     def __delitem__(self, key):
+        if self.buckets_size > 1024 and self.load_factor < 0.1:
+            self.resize_down()
+
         index = self.__get_bucket_index(key)
         llist = self.buckets[index]
         node = self.__find_node_by_key(llist, key)
@@ -122,6 +156,18 @@ class Hash(object):
         if self.buckets[self.iter_bucket_index].head:
             self.iter_prev = self.buckets[self.iter_bucket_index].head
             return self.buckets[self.iter_bucket_index].head.key
+
+        raise StopIteration
+
+    def items(self):
+        iter_bucket_index = 0
+        iter_prev = None
+
+        for iter_bucket_index in range(self.buckets_size):
+            it = self.buckets[iter_bucket_index].head
+            while it:
+                yield (it.key, it.value)
+                it = it.next
 
         raise StopIteration
 
