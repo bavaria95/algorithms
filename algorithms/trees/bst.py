@@ -13,10 +13,29 @@ class TreeNode(object):
     def __lt__(self, other):
         return self.key < other.key
 
+    def __repr__(self):
+        return 'Node: {}'.format(self.key)
+
 
 class BSTree(object):
     def __init__(self):
         self.root = None
+
+    def _search(self, node, key):
+        if not node:
+            return None
+
+        if node.key == key:
+            return node
+
+        if key < node.key:
+            # search in the left subtree
+            return self._search(node.left, key)
+
+        return self._search(node.right, key)
+
+    def search(self, key):
+        return self._search(self.root, key)
 
     def _insert(self, root, node):
         if node < root:
@@ -34,7 +53,6 @@ class BSTree(object):
                 return
             self._insert(root.right, node)
 
-
     def insert(self, node):
         if self.root is None:
             self.root = node
@@ -43,4 +61,16 @@ class BSTree(object):
 
 
 if __name__ == '__main__':
-    pass
+    import random
+
+    tree = BSTree()
+
+    nums = list(range(20))
+    random.shuffle(nums)
+
+    for i in nums:
+        tree.insert(TreeNode(i))
+
+    assert tree.search(0).key == 0
+    assert tree.search(10).key == 10
+    assert tree.search(25) is None
