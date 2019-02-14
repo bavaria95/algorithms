@@ -4,6 +4,8 @@ from functools import total_ordering
 class TreeNode(object):
     def __init__(self, key):
         self.key = key
+
+        self.parent = None
         self.left = None
         self.right = None
 
@@ -43,6 +45,7 @@ class BSTree(object):
             if not root.left:
                 # if no left subtree - append there
                 root.left = node
+                node.parent = root
                 return
             # otherwise keep going till reach node with no left leaf
             self._insert(root.left, node)
@@ -50,6 +53,7 @@ class BSTree(object):
             # insert to the right subtree
             if not root.right:
                 root.right = node
+                node.parent = root
                 return
             self._insert(root.right, node)
 
@@ -74,3 +78,8 @@ if __name__ == '__main__':
     assert tree.search(0).key == 0
     assert tree.search(10).key == 10
     assert tree.search(25) is None
+
+    if tree.root.left:
+        assert tree.root is tree.root.left.parent
+    else:
+        assert tree.root is tree.root.right.parent
