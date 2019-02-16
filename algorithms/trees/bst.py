@@ -158,6 +158,19 @@ class BSTree(object):
 
         return it
 
+    def max(self, node=None):
+        # find the smaller key starting from the node
+        # if node is not passed - finds minumum in the whole tree
+        if not node:
+            it = self.root
+        else:
+            it = node
+
+        while it.right:
+            it = it.right
+
+        return it
+
 
 if __name__ == '__main__':
     import random
