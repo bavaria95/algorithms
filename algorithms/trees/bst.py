@@ -171,19 +171,19 @@ class BSTree(object):
 
         return it
 
-    def _traverse(self, node, callback):
+    def _traverse(self, node, callback, *args, **kwargs):
         if not node:
             return
 
-        self._traverse(node.left, callback)
-        callback(node)
-        self._traverse(node.right, callback)
+        self._traverse(node.left, callback, *args, **kwargs)
+        callback(node, *args, **kwargs)
+        self._traverse(node.right, callback, *args, **kwargs)
 
-    def traverse(self, node=None, callback=print):
+    def traverse(self, node=None, callback=print, *args, **kwargs):
         if not node:
             node = self.root
 
-        self._traverse(node, callback)
+        self._traverse(node, callback, *args, **kwargs)
 
 
 if __name__ == '__main__':
@@ -196,6 +196,12 @@ if __name__ == '__main__':
 
     for i in nums:
         tree.insert(TreeNode(i))
+
+    def f(node, x):
+        x.append(node.key)
+    x = []
+    tree.traverse(tree.root, callback=f, x=x)
+    assert x == sorted(nums)
 
     assert tree.search(0).key == 0
     assert tree.search(10).key == 10
