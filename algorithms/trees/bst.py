@@ -171,6 +171,20 @@ class BSTree(object):
 
         return it
 
+    def _traverse(self, node, callback):
+        if not node:
+            return
+
+        self._traverse(node.left, callback)
+        callback(node)
+        self._traverse(node.right, callback)
+
+    def traverse(self, node=None, callback=print):
+        if not node:
+            node = self.root
+
+        self._traverse(node, callback)
+
 
 if __name__ == '__main__':
     import random
